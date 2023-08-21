@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Socket.io Test</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <video id="video"></video>
+    <h1>Testing Socket.io Connection</h1>
+    <input type="file" accept="video/*" id="fileInput" />
+    <input id="input" />
+    <div>
+      <button id="submit">Submit</button>
+      <button id="test">Capture</button>
+      <button id="save">Save outline</button>
+      <button id="save-finish">Save finish</button>
+    </div>
+    <div>
+      <button id="start">Start</button>
+      <button id="stop">Stop</button>
+    </div>
+    <label id="label"></label>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/client.js"></script>
+  </body>
+</html>

@@ -1,0 +1,36 @@
+/* canvas{
+    background-color: bisque;
+    padding: 10px;
+} */
+
+*{
+    margin: 0;
+    padding: 0;
+}
+div{
+    margin-top: 10px;
+}
+video{
+    width: 20%;
+    padding: 10px;
+    background-color: rgb(196, 234, 255);
+}
+
+/* canvas{
+    width: 40%;
+    padding: 10px;
+    background-color: rgb(255, 196, 196);
+} */
+
+label{
+    display: flex;
+    justify-content: center;
+    font-size: 46px;
+    font-weight: 900;
+    margin-top: 100px;
+}
+
+.flex-box{
+    display: flex;
+    justify-content: space-around;
+}
