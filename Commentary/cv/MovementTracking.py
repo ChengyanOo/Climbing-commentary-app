@@ -84,7 +84,7 @@ def process_image(detector, img, current_y, prev_y, last_fall_time):
 
         prev_y = current_y
     
-    path_to_file = "/Users/tonsonwang/Desktop/Commentary/express_server/boundingBox.txt"
+    path_to_file = "/Users/tonsonwang/Desktop/Climbing-commentary-app/Commentary/express_server/boundingBox.txt"
     with open(path_to_file, "r") as file:
         for line in file:
             coordinates = json.loads(line.strip())
@@ -224,7 +224,7 @@ def main():
         for f in files:
             os.remove(f)
 
-    input_folder = '/Users/tonsonwang/Desktop/Commentary/express_server/frames'
+    input_folder = '/Users/tonsonwang/Desktop/Climbing-commentary-app/Commentary/express_server/frames'
     output_folder = 'ProcessedImg'
     
 

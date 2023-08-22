@@ -2,6 +2,7 @@
 node_modules
 /.pnp
 .pnp.js
+ai-commentary-system-env
 
 .env
 myenv

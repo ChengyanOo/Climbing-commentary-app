@@ -121,28 +121,28 @@ saveFinishBtn.addEventListener("click", (e) => {
   tempY = 0;
 });
 
-// //using web cam
-// navigator.mediaDevices
-//   .getUserMedia({ video: true })
-//   .then((=stream) => {
-//     video.srcObject = stream;
-//     video.play();
-//   })
-//   .catch((error) => {
-//     console.error("Error accessing the camera:", error);
-//   });
-
-//using file
-fileInput.addEventListener("change", (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    const objectURL = URL.createObjectURL(file);
-    video.src = objectURL;
+//using web cam
+navigator.mediaDevices
+  .getUserMedia({ video: true })
+  .then((stream) => {
+    video.srcObject = stream;
     video.play();
-  } else {
-    console.error("No file selected");
-  }
-});
+  })
+  .catch((error) => {
+    console.error("Error accessing the camera:", error);
+  });
+
+// //using file
+// fileInput.addEventListener("change", (e) => {
+//   const file = e.target.files[0];
+//   if (file) {
+//     const objectURL = URL.createObjectURL(file);
+//     video.src = objectURL;
+//     video.play();
+//   } else {
+//     console.error("No file selected");
+//   }
+// });
 
 startBtn.addEventListener("click", () => {
   label.innerHTML = "Capturing img each 0.5...";

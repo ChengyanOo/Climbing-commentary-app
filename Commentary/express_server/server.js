@@ -3,8 +3,11 @@ const http = require("http");
 const socketIO = require("socket.io");
 const fs = require("fs");
 const path = require("path");
-const cors = require("cors");
+const player = require("play-sound")((opts = {}));
+// const cors = require("cors");
+const AudioManager = require('./audioManager');
 
+const audioManager = new AudioManager('exampleName');
 const app = express();
 const server = http.createServer(app);
 const io = socketIO(server, {
@@ -18,13 +21,10 @@ let id = 1;
 
 app.use(express.static("public"));
 
-// Create frames folder if it doesn't exist
 const framesFolder = path.join(__dirname, "frames");
 if (!fs.existsSync(framesFolder)) {
   fs.mkdirSync(framesFolder);
 }
-
-// Clear the content of "boundingBox.txt"
 fs.writeFile("boundingBox.txt", "", (err) => {
   if (err) {
     console.error("An error occurred while clearing the file:", err);
@@ -32,11 +32,32 @@ fs.writeFile("boundingBox.txt", "", (err) => {
   }
   console.log("File content cleared successfully!");
 });
+fs.writeFile("userInfo.txt", "", (err) => {
+  if (err) {
+    console.error("An error occurred while clearing the file:", err);
+    return;
+  }
+  console.log("File content cleared successfully!");
+});
 
+let isPlayed = false;
 io.on("connection", (socket) => {
   console.log("Server got lil bro");
-  socket.on("message", (data) => {
-    console.log("Message received:", data);
+  
+  socket.on("start-climbing", () => {
+    audioManager.playStartAudio();
+  });
+  socket.on("three-min-left", () => {
+    audioManager.playThreeMinAudio();
+  });
+  socket.on("two-min-left", () => {
+    audioManager.playTwoMinAudio();
+  });
+  socket.on("one-min-left", () => {
+    audioManager.playOneMinAudio();
+  });
+  socket.on("half-min-left", () => {
+    audioManager.playHalfMinAudio();
   });
   socket.on("frame", (data) => {
     // console.log("Frame received:", data.image);
@@ -51,23 +72,11 @@ io.on("connection", (socket) => {
         console.log("File saved:", filename);
       }
     });
-    
-    const folderPath = "/Users/tonsonwang/Desktop/Commentary/FinishImg";
-    fs.watch(folderPath, { recursive: true }, (eventType, filename) => {
-      if (filename) {
-        console.log(
-          `File ${filename} has been changed with event ${eventType}`
-        );
-        socket.emit("finish-detected");
-      }
-    });
   });
 
   socket.on("bounding-box", (data) => {
-    // Convert data to a string if necessary
     const dataString = JSON.stringify(data);
-
-    // Append the data to "boundingBox.txt"
+    console.log(dataString);
     fs.appendFile("boundingBox.txt", dataString + "\n", (err) => {
       if (err) {
         console.error("An error occurred while writing to the file:", err);
@@ -76,7 +85,53 @@ io.on("connection", (socket) => {
       console.log("Data successfully appended to boundingBox.txt");
     });
   });
+
+  socket.on("form-value-collected", (data) => {
+    const dataString =
+      "The contestant's name is " +
+      data.name +
+      ", age is " +
+      data.age +
+      ", height is " +
+      data.height +
+      ", nationality is " +
+      data.nationality +
+      ", experience is " +
+      data.experience +
+      ", level is " +
+      data.level +
+      ", and current level is " +
+      data.currLevel +
+      ".";
+
+    fs.appendFile("userInfo.txt", dataString + "\n", (err) => {
+      if (err) {
+        console.error("An error occurred while writing to the file:", err);
+        return;
+      }
+      console.log("Data successfully appended to userInfo.txt" + dataString);
+    });
+  });
 });
+
+const folderPath =
+  "/Users/tonsonwang/Desktop/Climbing-commentary-app/Commentary/FinishImg";
+fs.watch(folderPath, { recursive: true }, (eventType, filename) => {
+  if (filename && !isPlayed) {
+    console.log(`File ${filename} has been changed with event ${eventType}`);
+    io.emit("finish-detected");
+    // const absolutePathToMP3 =
+    //   "/Users/tonsonwang/Desktop/Climbing-commentary-app/Commentary/ai-commentary/audios/audio_7.mp3";
+    // player.play(absolutePathToMP3, function (err) {
+    //   if (err) throw err;
+    // });
+    // isPlayed = true;
+    audioManager.playFinishAudio();
+    isPlayed = true;
+  }
+});
+
+//TODO: in need of a sound management system.
 
 server.listen(3000, () =>
   console.log("Server running on http://localhost:3000")
