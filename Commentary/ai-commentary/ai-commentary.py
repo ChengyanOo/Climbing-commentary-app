@@ -5,8 +5,14 @@ import requests
 from playsound import playsound
 import os
 import time
+import subprocess
+
 
 load_dotenv(find_dotenv())
+
+express_server_frames_path = '/Users/tonsonwang/Desktop/Climbing-commentary-app/Commentary/ai-commentary/audios'
+command = 'find . -type f -name "*.mp3" ! -name "introduction_audio.mp3" -exec rm -f {} +'
+subprocess.run(command, shell=True, cwd=express_server_frames_path)
 
 
 def get_res_from_ai(human_input):
@@ -74,30 +80,24 @@ with open(output_file_path, 'w') as out_file:
 print(f'Results written to {output_file_path}')
 
 
-
 CHUNK_SIZE = 1024
 url = "https://api.elevenlabs.io/v1/text-to-speech/TX3LPaxmHKxFdv7VOQHJ"
 
 headers = {
     "Accept": "audio/mpeg",
     "Content-Type": "application/json",
-    "xi-api-key": "eeced99bf38abc46b65ceef79ccfb274"
+    "xi-api-key": "42a3511e687fa48304d59a8a9fda5991"
 }
 
 data = {
     "text": "",
     "model_id": "eleven_monolingual_v1",
     "voice_settings": {
-        "stability": 0.3,
-        "similarity_boost": 0.8
+        "stability": 0.2,
+        "similarity_boost": 0.6
     }
 }
 
-# response = requests.post(url, json=data, headers=headers)
-# with open('output.mp3', 'wb') as f:
-#     for chunk in response.iter_content(chunk_size=CHUNK_SIZE):
-#         if chunk:
-#             f.write(chunk)
 
 time.sleep(3)
 
@@ -110,15 +110,38 @@ with open(text_file_path, 'r') as file:
     lines = file.readlines()
 
 for index, line in enumerate(lines):
-    line = line.strip() 
-    data["text"] = line 
+    line = line.strip()
+    data["text"] = line
 
     response = requests.post(url, json=data, headers=headers)
-    
+
     audio_file_path = f'audios/audio_{index}.mp3'
     with open(audio_file_path, 'wb') as f:
         for chunk in response.iter_content(chunk_size=CHUNK_SIZE):
             if chunk:
                 f.write(chunk)
-    
+
     print(f"Audio for line {index} saved to {audio_file_path}")
+
+# introduction = """Hey there, rock stars! Welcome to the simulation bouldering contest where 
+# virtual grips meet real grit! Ready to take on the challenge? First, hit the 'Capture' button 
+# and snap a frame from the video on the left. Got it? Awesome! Now, unleash your inner 
+# route-setter by using the 'Save Hold' button to select all the holds of the route. And don't 
+# be shy; grab that finishing hold with the 'Save Finish' button! Now, here's the fun part: 
+# You've got a whole minute to gaze, ponder, and strategize this boulder problem. Feel the burn? 
+# Feel the excitement? When you're ready to unleash the beast, smash that 'Start' button, and let 
+# the challenge begin! Good luck, and may the holds be ever in your favor!"""
+
+# introduction_data = data.copy()
+# introduction_data["text"] = introduction
+
+# introduction_response = requests.post(
+#     url, json=introduction_data, headers=headers)
+
+# introduction_audio_file_path = 'audios/introduction_audio.mp3'
+# with open(introduction_audio_file_path, 'wb') as f:
+#     for chunk in introduction_response.iter_content(chunk_size=CHUNK_SIZE):
+#         if chunk:
+#             f.write(chunk)
+
+# print(f"Introduction audio saved to {introduction_audio_file_path}")

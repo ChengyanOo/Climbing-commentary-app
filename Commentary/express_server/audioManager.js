@@ -48,6 +48,15 @@ class AudioManager {
   playFinishAudio() {
     this._playAudio("finishAudio");
   }
+  playIntroAudio() {
+    this._playAudio("introductionAudio");
+  }
+  playBeepSound() {
+    this._playAudio("beepSound");
+  }
+  playTimeUpSound() {
+    this._playAudio("timeUpSound");
+  }
   enableSound() {
     this.isplaying = false;
   }
